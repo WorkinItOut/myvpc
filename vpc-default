@@ -141,14 +141,14 @@ Parameters:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.0.0/19
+    Default: 10.201.32.0/21
     Description: CIDR block for private subnet 1A located in Availability Zone 1
     Type: String
   PrivateSubnet1BCIDR:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.192.0/21
+    Default: 10.201.40.0/21
     Description: >-
       CIDR block for private subnet 1B with dedicated network ACL located in
       Availability Zone 1
@@ -205,14 +205,14 @@ Parameters:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.128.0/20
+    Default: 10.201.0.0/20
     Description: CIDR block for the public DMZ subnet 1 located in Availability Zone 1
     Type: String
   PublicSubnet2CIDR:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.144.0/20
+    Default: 10.201.16.0/20
     Description: CIDR block for the public DMZ subnet 2 located in Availability Zone 2
     Type: String
   PublicSubnet3CIDR:
@@ -233,7 +233,7 @@ Parameters:
     AllowedPattern: >-
       ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.0.0/16
+    Default: 10.201.0.0/18
     Description: CIDR block for the VPC
     Type: String
   VPCTenancy:
@@ -250,79 +250,79 @@ Mappings:
     us-gov-west-1:
       AWSNATHVM: ami-3f0a8f5e
 Conditions:
-  3AZCondition: !Or 
-    - !Equals 
+  3AZCondition: !Or
+    - !Equals
       - !Ref NumberOfAZs
       - '3'
     - !Condition 4AZCondition
-  4AZCondition: !Equals 
+  4AZCondition: !Equals
     - !Ref NumberOfAZs
     - '4'
-  AdditionalPrivateSubnetsCondition: !And 
-    - !Equals 
+  AdditionalPrivateSubnetsCondition: !And
+    - !Equals
       - !Ref CreatePrivateSubnets
       - 'true'
-    - !Equals 
+    - !Equals
       - !Ref CreateAdditionalPrivateSubnets
       - 'true'
-  AdditionalPrivateSubnets&3AZCondition: !And 
+  AdditionalPrivateSubnets&3AZCondition: !And
     - !Condition AdditionalPrivateSubnetsCondition
     - !Condition 3AZCondition
-  AdditionalPrivateSubnets&4AZCondition: !And 
+  AdditionalPrivateSubnets&4AZCondition: !And
     - !Condition AdditionalPrivateSubnetsCondition
     - !Condition 4AZCondition
-  GovCloudCondition: !Equals 
+  GovCloudCondition: !Equals
     - !Ref 'AWS::Region'
     - us-gov-west-1
-  NATInstanceCondition: !And 
+  NATInstanceCondition: !And
     - !Condition PrivateSubnetsCondition
     - !Condition GovCloudCondition
-  NATGatewayCondition: !And 
+  NATGatewayCondition: !And
     - !Condition PrivateSubnetsCondition
-    - !Not 
+    - !Not
       - !Condition GovCloudCondition
-  NATInstance&3AZCondition: !And 
+  NATInstance&3AZCondition: !And
     - !Condition NATInstanceCondition
     - !Condition 3AZCondition
-  NATInstance&4AZCondition: !And 
+  NATInstance&4AZCondition: !And
     - !Condition NATInstanceCondition
     - !Condition 4AZCondition
-  NATGateway&3AZCondition: !And 
+  NATGateway&3AZCondition: !And
     - !Condition NATGatewayCondition
     - !Condition 3AZCondition
-  NATGateway&4AZCondition: !And 
+  NATGateway&4AZCondition: !And
     - !Condition NATGatewayCondition
     - !Condition 4AZCondition
-  NVirginiaRegionCondition: !Equals 
+  NVirginiaRegionCondition: !Equals
     - !Ref 'AWS::Region'
     - us-east-1
-  PrivateSubnetsCondition: !Equals 
+  PrivateSubnetsCondition: !Equals
     - !Ref CreatePrivateSubnets
     - 'true'
-  PrivateSubnets&3AZCondition: !And 
+  PrivateSubnets&3AZCondition: !And
     - !Condition PrivateSubnetsCondition
     - !Condition 3AZCondition
-  PrivateSubnets&4AZCondition: !And 
+  PrivateSubnets&4AZCondition: !And
     - !Condition PrivateSubnetsCondition
     - !Condition 4AZCondition
-  S3VPCEndpointCondition: !And 
+  S3VPCEndpointCondition: !And
     - !Condition PrivateSubnetsCondition
-    - !Not 
-      - !Or 
-        - !Equals 
+    - !Not
+      - !Or
+        - !Equals
           - !Ref 'AWS::Region'
           - us-gov-west-1
-        - !Equals 
+        - !Equals
           - !Ref 'AWS::Region'
           - cn-north-1
 Resources:
   DHCPOptions:
     Type: 'AWS::EC2::DHCPOptions'
     Properties:
-      DomainName: !If 
+      DomainName: !If
         - NVirginiaRegionCondition
         - ec2.internal
-        - !Join 
+        - !Join
           - ''
           - - !Ref 'AWS::Region'
             - .compute.internal
@@ -362,7 +362,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet1ACIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '0'
         - !Ref AvailabilityZones
       Tags:
@@ -376,7 +376,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet1BCIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '0'
         - !Ref AvailabilityZones
       Tags:
@@ -390,7 +390,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet2ACIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '1'
         - !Ref AvailabilityZones
       Tags:
@@ -404,7 +404,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet2BCIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '1'
         - !Ref AvailabilityZones
       Tags:
@@ -418,7 +418,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet3ACIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '2'
         - !Ref AvailabilityZones
       Tags:
@@ -432,7 +432,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet3BCIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '2'
         - !Ref AvailabilityZones
       Tags:
@@ -446,7 +446,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet4ACIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '3'
         - !Ref AvailabilityZones
       Tags:
@@ -460,7 +460,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PrivateSubnet4BCIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '3'
         - !Ref AvailabilityZones
       Tags:
@@ -473,7 +473,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PublicSubnet1CIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '0'
         - !Ref AvailabilityZones
       Tags:
@@ -487,7 +487,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PublicSubnet2CIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '1'
         - !Ref AvailabilityZones
       Tags:
@@ -502,7 +502,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PublicSubnet3CIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '2'
         - !Ref AvailabilityZones
       Tags:
@@ -517,7 +517,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref PublicSubnet4CIDR
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - '3'
         - !Ref AvailabilityZones
       Tags:
@@ -542,11 +542,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet1ARouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance1
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway1
         - !Ref 'AWS::NoValue'
@@ -572,11 +572,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet2ARouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance2
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway2
         - !Ref 'AWS::NoValue'
@@ -602,11 +602,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet3ARouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance3
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway3
         - !Ref 'AWS::NoValue'
@@ -632,11 +632,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet4ARouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance4
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway4
         - !Ref 'AWS::NoValue'
@@ -662,11 +662,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet1BRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance1
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway1
         - !Ref 'AWS::NoValue'
@@ -728,11 +728,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet2BRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance2
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway2
         - !Ref 'AWS::NoValue'
@@ -794,11 +794,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet3BRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance3
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway3
         - !Ref 'AWS::NoValue'
@@ -860,11 +860,11 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateSubnet4BRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance4
         - !Ref 'AWS::NoValue'
-      NatGatewayId: !If 
+      NatGatewayId: !If
         - NATGatewayCondition
         - !Ref NATGateway4
         - !Ref 'AWS::NoValue'
@@ -954,7 +954,7 @@ Resources:
     Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance1
         - !Ref 'AWS::NoValue'
@@ -964,7 +964,7 @@ Resources:
     Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance2
         - !Ref 'AWS::NoValue'
@@ -974,7 +974,7 @@ Resources:
     Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance3
         - !Ref 'AWS::NoValue'
@@ -984,7 +984,7 @@ Resources:
     Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
-      InstanceId: !If 
+      InstanceId: !If
         - NATInstanceCondition
         - !Ref NATInstance4
         - !Ref 'AWS::NoValue'
@@ -993,7 +993,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::NatGateway'
     Properties:
-      AllocationId: !GetAtt 
+      AllocationId: !GetAtt
         - NAT1EIP
         - AllocationId
       SubnetId: !Ref PublicSubnet1
@@ -1002,7 +1002,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::NatGateway'
     Properties:
-      AllocationId: !GetAtt 
+      AllocationId: !GetAtt
         - NAT2EIP
         - AllocationId
       SubnetId: !Ref PublicSubnet2
@@ -1011,7 +1011,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::NatGateway'
     Properties:
-      AllocationId: !GetAtt 
+      AllocationId: !GetAtt
         - NAT3EIP
         - AllocationId
       SubnetId: !Ref PublicSubnet3
@@ -1020,7 +1020,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::NatGateway'
     Properties:
-      AllocationId: !GetAtt 
+      AllocationId: !GetAtt
         - NAT4EIP
         - AllocationId
       SubnetId: !Ref PublicSubnet4
@@ -1029,7 +1029,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AWSNATHVM
@@ -1044,7 +1044,7 @@ Resources:
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
           SubnetId: !Ref PublicSubnet1
-      KeyName: !If 
+      KeyName: !If
         - NATInstanceCondition
         - !Ref KeyPairName
         - !Ref 'AWS::NoValue'
@@ -1054,7 +1054,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AWSNATHVM
@@ -1069,7 +1069,7 @@ Resources:
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
           SubnetId: !Ref PublicSubnet2
-      KeyName: !If 
+      KeyName: !If
         - NATInstanceCondition
         - !Ref KeyPairName
         - !Ref 'AWS::NoValue'
@@ -1079,7 +1079,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AWSNATHVM
@@ -1094,7 +1094,7 @@ Resources:
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
           SubnetId: !Ref PublicSubnet3
-      KeyName: !If 
+      KeyName: !If
         - NATInstanceCondition
         - !Ref KeyPairName
         - !Ref 'AWS::NoValue'
@@ -1104,7 +1104,7 @@ Resources:
     DependsOn: VPCGatewayAttachment
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AWSNATHVM
@@ -1119,7 +1119,7 @@ Resources:
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
           SubnetId: !Ref PublicSubnet4
-      KeyName: !If 
+      KeyName: !If
         - NATInstanceCondition
         - !Ref KeyPairName
         - !Ref 'AWS::NoValue'
@@ -1149,31 +1149,31 @@ Resources:
       RouteTableIds:
         - !Ref PrivateSubnet1ARouteTable
         - !Ref PrivateSubnet2ARouteTable
-        - !If 
+        - !If
           - PrivateSubnets&3AZCondition
           - !Ref PrivateSubnet3ARouteTable
           - !Ref 'AWS::NoValue'
-        - !If 
+        - !If
           - PrivateSubnets&4AZCondition
           - !Ref PrivateSubnet4ARouteTable
           - !Ref 'AWS::NoValue'
-        - !If 
+        - !If
           - AdditionalPrivateSubnetsCondition
           - !Ref PrivateSubnet1BRouteTable
           - !Ref 'AWS::NoValue'
-        - !If 
+        - !If
           - AdditionalPrivateSubnetsCondition
           - !Ref PrivateSubnet2BRouteTable
           - !Ref 'AWS::NoValue'
-        - !If 
+        - !If
           - AdditionalPrivateSubnets&3AZCondition
           - !Ref PrivateSubnet3BRouteTable
           - !Ref 'AWS::NoValue'
-        - !If 
+        - !If
           - AdditionalPrivateSubnets&4AZCondition
           - !Ref PrivateSubnet4BRouteTable
           - !Ref 'AWS::NoValue'
-      ServiceName: !Join 
+      ServiceName: !Join
         - ''
         - - com.amazonaws.
           - !Ref 'AWS::Region'
